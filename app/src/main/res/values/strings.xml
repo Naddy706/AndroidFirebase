@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FirebaseExample</string>
+    <string-array name="country">
+        <item>Select Country</item>
+        <item>Pakistan</item>
+        <item>China</item>
+        <item>Iran</item>
+        <item>India</item>
+    </string-array>
+</resources>
