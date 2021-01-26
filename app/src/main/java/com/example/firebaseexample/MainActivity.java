@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     CheckBox c1, c2, c3;
     ArrayList<String> LangList;
-    String n,e,p,SDate,STime;
+    String n,e,p,SDate="",STime="";
     public static final int PICK_IMAGE = 1;
-    public Uri imageUri,downlaodUri;
+    public Uri imageUri = null ,downlaodUri;
     public int mYear, mMonth, mDay, mHour, mMinute;
 
 
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        SDate = dayOfMonth + "-" + (month + 1) + "-" + year+"";
+                        SDate = dayOfMonth + "-" + (month + 1) + "-" + year+"".trim();
 
                         Toast.makeText(MainActivity.this, ""+dayOfMonth + "-" + (month + 1) + "-" + year, Toast.LENGTH_SHORT).show();
                     }
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        STime = hourOfDay + ":" + minute+"";
+                        STime = hourOfDay + ":" + minute+"".trim();
                         Toast.makeText(MainActivity.this, ""+hourOfDay + ":" + minute, Toast.LENGTH_SHORT).show();
                     }
                 },mHour,mMinute,false);
@@ -196,6 +196,15 @@ public class MainActivity extends AppCompatActivity {
                 else if(!c1.isChecked() && !c2.isChecked() && !c3.isChecked()){
                     Toast.makeText(MainActivity.this, "Please select a Language You Speak", Toast.LENGTH_SHORT).show();
                 }
+                else if(SDate.equals("")){
+                    Toast.makeText(MainActivity.this, "Please Select Date", Toast.LENGTH_SHORT).show();
+                }
+                else if(STime.equals("")){
+                    Toast.makeText(MainActivity.this, "Please Select Time", Toast.LENGTH_SHORT).show();
+                }
+                else if(imageUri == null){
+                    Toast.makeText(MainActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
+                }
                 else {
 
 
@@ -223,6 +232,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
+
+
                     User users = new User();
                     users.Name = n;
                     users.Email = e;
@@ -247,8 +258,9 @@ public class MainActivity extends AppCompatActivity {
                             name.setText("");
                             email.setText("");
                             pass.setText("");
-                            downlaodUri ="";
-                            imageUri ="";
+                            downlaodUri = null;
+                            imageUri = null;
+                            imageView.setImageURI(null);
                                 spinner.setSelection(0);
                             } else {
                                 Toast.makeText(MainActivity.this, "fail to add data ", Toast.LENGTH_SHORT).show();
@@ -260,8 +272,9 @@ public class MainActivity extends AppCompatActivity {
                                 name.setText("");
                                 email.setText("");
                                 pass.setText("");
-                                downlaodUri ="";
-                                imageUri ="";
+                                downlaodUri = null;
+                                imageUri = null;
+                                imageView.setImageURI(null);
                                 spinner.setSelection(0);
                             }
                         }
