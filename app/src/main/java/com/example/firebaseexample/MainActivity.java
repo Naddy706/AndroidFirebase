@@ -13,6 +13,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -296,6 +299,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu,menu);
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.UserShow:
+                ShowUserPage();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -317,6 +342,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public  void ShowUserPage(){
+        Intent intent = new Intent(MainActivity.this,UserShow.class);
+        startActivity(intent);
+    }
 
     public void uploadPic() {
 
