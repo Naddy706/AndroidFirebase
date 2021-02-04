@@ -4,6 +4,9 @@ import java.util.Arrays;
 
 public class User {
 
+
+
+    String Id;
     String Name;
     String Email;
     String Password;
@@ -13,8 +16,8 @@ public class User {
     String Date;
     String Time;
     String Uri;
-
-    public User(String name, String email, String password, String gender, String country, String language, String date, String time, String uri) {
+    public User(String id, String name, String email, String password, String gender, String country, String language, String date, String time, String uri) {
+        Id = id;
         Name = name;
         Email = email;
         Password = password;
@@ -27,11 +30,22 @@ public class User {
     }
 
 
+
+
+
+
     public User(){
 
 
     }
 
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
+    }
 
     public String getUri() {
         return Uri;
