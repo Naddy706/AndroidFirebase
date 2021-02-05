@@ -56,29 +56,14 @@ public class UserShow extends AppCompatActivity {
 
 
 
+listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String selected = ((TextView) view.findViewById(R.id.id)).getText().toString();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String selected = ((TextView) view.findViewById(R.id.id)).getText().toString();
-
-                // Toast.makeText(UserShow.this, ""+selected, Toast.LENGTH_SHORT).show();
-                AlertDialog builder = new AlertDialog.Builder(UserShow.this).create();
-                    builder.setTitle(selected);
-                    builder.setMessage("Match Ids");
-                    builder.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.show();
-                }
-
-
-        });
-
+        Toast.makeText(UserShow.this, ""+selected, Toast.LENGTH_SHORT).show();
+    }
+});
 
 
     }

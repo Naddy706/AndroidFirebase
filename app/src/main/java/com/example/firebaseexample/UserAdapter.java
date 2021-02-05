@@ -87,6 +87,12 @@ public class UserAdapter  extends BaseAdapter {
 
         Picasso.get().load(i).into(myHolder.image);
 
+        myHolder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Image clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         myHolder.dt.setOnClickListener(new View.OnClickListener() {
             @Override

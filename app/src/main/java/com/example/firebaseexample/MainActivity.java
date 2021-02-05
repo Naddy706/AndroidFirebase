@@ -39,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -53,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
 
     EditText name, pass, email;
     Spinner spinner;
-    Button btn,dt,tm,pic;
+    Button btn,dt,tm,pic,updd;
     RadioGroup radioGroup;
     RadioButton radioButton;
     ImageView imageView;
     CheckBox c1, c2, c3;
     ArrayList<String> LangList;
-    String n,e,p,SDate="",STime="";
+    String n,e,p,SDate="",STime="",durl;
     public static final int PICK_IMAGE = 1;
     public Uri imageUri = null ,downlaodUri;
     public int mYear, mMonth, mDay, mHour, mMinute;
@@ -69,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference ref;
     FirebaseStorage storage;
     StorageReference storageReference;
+
+
+
+
 
 
 
@@ -108,6 +113,50 @@ public class MainActivity extends AppCompatActivity {
         tm = findViewById(R.id.Time);
         pic = findViewById(R.id.button7);
         btn = findViewById(R.id.button);
+        updd = findViewById(R.id.upd);
+
+if(checkInt() == true){
+    btn.setVisibility(View.GONE);
+    updd.setVisibility(View.VISIBLE);
+    Intent i = getIntent();
+    name.setText(i.getStringExtra("name"));
+    email.setText(i.getStringExtra("email"));
+    pass.setText(i.getStringExtra("password"));
+    String compareValue = i.getStringExtra("country");
+    if (compareValue != null) {
+        int spinnerPosition = adapter.getPosition(compareValue);
+        spinner.setSelection(spinnerPosition);
+    }
+    if(i.getStringExtra("gender").equals("Male")){
+        RadioButton Male = findViewById(R.id.radioButton);
+        Male.setChecked(true);
+    }
+    else {
+        RadioButton F = findViewById(R.id.radioButton2);
+        F.setChecked(true);
+    }
+
+    String tmp=i.getStringExtra("language");
+    //String tmp="[\"first\",\"second\",\"third\"]".replace("\"", "");
+    String [] tm=tmp.substring(1, tmp.length()-1).split(",");
+    //Toast.makeText(this, ""+tm, Toast.LENGTH_SHORT).show();
+
+    for (int a=0;a<tm.length;a++){
+        Toast.makeText(this, ""+tm[a]+tm.length, Toast.LENGTH_SHORT).show();
+      cb(tm[a]);
+    }
+
+    SDate = i.getStringExtra("date");
+    STime = i.getStringExtra("time");
+    durl = i.getStringExtra("uri");
+
+    Picasso.get().load(durl).into(imageView);
+
+}
+else {
+    btn.setVisibility(View.VISIBLE);
+    updd.setVisibility(View.GONE);
+}
 
 
 
@@ -155,22 +204,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
-
-
-
-        btn.setOnClickListener(new View.OnClickListener() {
+updd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                 n = name.getText().toString().trim();
-                 p = pass.getText().toString().trim();
-                 e = email.getText().toString();
+                n = name.getText().toString().trim();
+                p = pass.getText().toString().trim();
+                e = email.getText().toString();
                 String c = spinner.getSelectedItem().toString();
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 // find the radiobutton by returned id
@@ -179,64 +219,30 @@ public class MainActivity extends AppCompatActivity {
                 if (n.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Please fill the Name", Toast.LENGTH_SHORT).show();
 
-                }
-                else if (p.isEmpty()) {
+                } else if (p.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Please fill the Password", Toast.LENGTH_SHORT).show();
 
-                }
-                else if (c.trim().equals("Select Country")) {
+                } else if (c.trim().equals("Select Country")) {
                     Toast.makeText(MainActivity.this, "Please select a Country", Toast.LENGTH_SHORT).show();
 
-                }
-                else if (e.isEmpty()) {
+                } else if (e.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Please fill the email", Toast.LENGTH_SHORT).show();
 
-                }
-                else if (radioGroup.getCheckedRadioButtonId() == -1) {
+                } else if (radioGroup.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(MainActivity.this, "Please select ur gender ", Toast.LENGTH_SHORT).show();
 
-                }
-                else if(!c1.isChecked() && !c2.isChecked() && !c3.isChecked()){
+                } else if (!c1.isChecked() && !c2.isChecked() && !c3.isChecked()) {
                     Toast.makeText(MainActivity.this, "Please select a Language You Speak", Toast.LENGTH_SHORT).show();
-                }
-                else if(SDate.equals("")){
+                } else if (SDate.equals("")) {
                     Toast.makeText(MainActivity.this, "Please Select Date", Toast.LENGTH_SHORT).show();
-                }
-                else if(STime.equals("")){
+                } else if (STime.equals("")) {
                     Toast.makeText(MainActivity.this, "Please Select Time", Toast.LENGTH_SHORT).show();
-                }
-                else if(imageUri == null){
-                    Toast.makeText(MainActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                }  else {
 
 
-                    if(c1.isChecked()){
-                        LangList.add(c1.getText().toString());
-                    }
-                    else {
-                        c1.setChecked(false);
-                        LangList.remove(c1.getText().toString());
-                    }
+                    markchecks();
 
-                    if(c2.isChecked()){
-                        LangList.add(c2.getText().toString());
-                    }
-                    else {
-
-                        c2.setChecked(false);
-                    }
-                    if(c3.isChecked()){
-                        LangList.add(c3.getText().toString());
-                    }
-                    else {
-                        c3.setChecked(false);
-                        LangList.remove(c3.getText().toString());
-
-                    }
-
-
-
+                    durl = downlaodUri.toString();
                     User users = new User();
                     users.Name = n;
                     users.Email = e;
@@ -246,9 +252,11 @@ public class MainActivity extends AppCompatActivity {
                     users.Language = LangList.toString();
                     users.Date = SDate.toString();
                     users.Time = STime.toString();
-                    users.Uri = downlaodUri.toString();
+                    users.Uri = durl;
 
-                    ref.push().setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    Intent i= getIntent();
+
+                    ref.child(i.getStringExtra("id")).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()) {
@@ -258,13 +266,15 @@ public class MainActivity extends AppCompatActivity {
                                 c2.setChecked(false);
                                 c3.setChecked(false);
                                 radioButton.setChecked(false);
-                            name.setText("");
-                            email.setText("");
-                            pass.setText("");
-                            downlaodUri = null;
-                            imageUri = null;
-                            imageView.setImageURI(null);
+                                name.setText("");
+                                email.setText("");
+                                pass.setText("");
+                                downlaodUri = null;
+                                imageUri = null;
+                                imageView.setImageURI(null);
                                 spinner.setSelection(0);
+                                Intent imm= new Intent(MainActivity.this,UserShow.class);
+                                startActivity(imm);
                             } else {
                                 Toast.makeText(MainActivity.this, "fail to add data ", Toast.LENGTH_SHORT).show();
                                 LangList.clear();
@@ -286,6 +296,99 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    btn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            n = name.getText().toString().trim();
+            p = pass.getText().toString().trim();
+            e = email.getText().toString();
+            String c = spinner.getSelectedItem().toString();
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            // find the radiobutton by returned id
+            radioButton = (RadioButton) findViewById(selectedId);
+
+            if (n.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please fill the Name", Toast.LENGTH_SHORT).show();
+
+            } else if (p.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please fill the Password", Toast.LENGTH_SHORT).show();
+
+            } else if (c.trim().equals("Select Country")) {
+                Toast.makeText(MainActivity.this, "Please select a Country", Toast.LENGTH_SHORT).show();
+
+            } else if (e.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please fill the email", Toast.LENGTH_SHORT).show();
+
+            } else if (radioGroup.getCheckedRadioButtonId() == -1) {
+                Toast.makeText(MainActivity.this, "Please select ur gender ", Toast.LENGTH_SHORT).show();
+
+            } else if (!c1.isChecked() && !c2.isChecked() && !c3.isChecked()) {
+                Toast.makeText(MainActivity.this, "Please select a Language You Speak", Toast.LENGTH_SHORT).show();
+            } else if (SDate.equals("")) {
+                Toast.makeText(MainActivity.this, "Please Select Date", Toast.LENGTH_SHORT).show();
+            } else if (STime.equals("")) {
+                Toast.makeText(MainActivity.this, "Please Select Time", Toast.LENGTH_SHORT).show();
+            } else if (imageUri == null) {
+                Toast.makeText(MainActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
+            } else {
+
+
+                markchecks();
+
+                durl = downlaodUri.toString();
+                User users = new User();
+                users.Name = n;
+                users.Email = e;
+                users.Password = p;
+                users.Gender = radioButton.getText().toString();
+                users.Country = c;
+                users.Language = LangList.toString();
+                users.Date = SDate.toString();
+                users.Time = STime.toString();
+                users.Uri =durl;
+
+                ref.push().setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete()) {
+                            Toast.makeText(MainActivity.this, "data added", Toast.LENGTH_SHORT).show();
+                            LangList.clear();
+                            c1.setChecked(false);
+                            c2.setChecked(false);
+                            c3.setChecked(false);
+                            radioButton.setChecked(false);
+                            name.setText("");
+                            email.setText("");
+                            pass.setText("");
+                            downlaodUri = null;
+                            imageUri = null;
+                            imageView.setImageURI(null);
+                            spinner.setSelection(0);
+                        } else {
+                            Toast.makeText(MainActivity.this, "fail to add data ", Toast.LENGTH_SHORT).show();
+                            LangList.clear();
+                            c1.setChecked(false);
+                            c2.setChecked(false);
+                            c3.setChecked(false);
+                            radioButton.setChecked(false);
+                            name.setText("");
+                            email.setText("");
+                            pass.setText("");
+                            downlaodUri = null;
+                            imageUri = null;
+                            imageView.setImageURI(null);
+                            spinner.setSelection(0);
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+
+
+
 
 
         pic.setOnClickListener(new View.OnClickListener() {
@@ -297,6 +400,79 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent , PICK_IMAGE);
             }
         });
+
+
+    }
+
+
+
+    public boolean checkInt(){
+
+        Intent i = getIntent();
+        if(i.getStringExtra("id") != null && i.getStringExtra("name") != null && i.getStringExtra("email") != null && i.getStringExtra("password") != null &&  i.getStringExtra("country") != null &&  i.getStringExtra("gender") != null &&  i.getStringExtra("language") != null &&  i.getStringExtra("date") != null &&  i.getStringExtra("time") != null &&  i.getStringExtra("uri") != null ) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public  void cb(String data){
+        if(data.equals("Englist")){
+
+            c1.setChecked(true);
+            LangList.add(c1.getText().toString().trim());
+            Toast.makeText(this, ""+data, Toast.LENGTH_SHORT).show();
+
+        }
+        else if(data.equals("Urdu")){
+            c3.setChecked(true);
+            LangList.add(c3.getText().toString().trim());
+            Toast.makeText(this, ""+data, Toast.LENGTH_SHORT).show();
+
+        }
+        else if(data.equals(" Urdu")){
+            c3.setChecked(true);
+            LangList.add(c3.getText().toString().trim());
+            Toast.makeText(this, ""+data, Toast.LENGTH_SHORT).show();
+
+        }
+        else  if(data.equals("other")){
+            c2.setChecked(true);
+            LangList.add(c2.getText().toString().trim());
+            Toast.makeText(this, ""+data, Toast.LENGTH_SHORT).show();
+        }
+        else  if(data.equals(" other")){
+            c2.setChecked(true);
+            LangList.add(c2.getText().toString().trim());
+            Toast.makeText(this, ""+data, Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    public void  markchecks(){
+        if (c1.isChecked()) {
+            LangList.add(c1.getText().toString().trim());
+        } else {
+            c1.setChecked(false);
+            LangList.remove(c1.getText().toString().trim());
+        }
+
+        if (c2.isChecked()) {
+            LangList.add(c2.getText().toString().trim());
+        } else {
+
+            c2.setChecked(false);
+            LangList.remove(c2.getText().toString().trim());
+        }
+        if (c3.isChecked()) {
+            LangList.add(c3.getText().toString().trim());
+        } else {
+            c3.setChecked(false);
+            LangList.remove(c3.getText().toString().trim());
+
+        }
     }
 
     @Override
