@@ -46,34 +46,8 @@ public class UserShow extends AppCompatActivity {
 
         users = new ArrayList<User>();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference().child("Users");
-        getData();
-
-         adapter = new UserAdapter(UserShow.this,users,database);
-
-        listView = findViewById(R.id.list);
-       listView.setAdapter(adapter);
-
-
-
-listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String selected = ((TextView) view.findViewById(R.id.id)).getText().toString();
-
-        Toast.makeText(UserShow.this, ""+selected, Toast.LENGTH_SHORT).show();
-    }
-});
-
-
-    }
-
-
-    public  void getData(){
-
-
-
-        FirebaseDatabase.getInstance().getReference().child("Users").addValueEventListener(new ValueEventListener() {
+        reference = database.getReference();
+        reference.child("Users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
@@ -98,15 +72,41 @@ listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+                Toast.makeText(UserShow.this, ""+error, Toast.LENGTH_SHORT).show();
             }
         });
 
+         adapter = new UserAdapter(UserShow.this,users,database);
+
+        listView = findViewById(R.id.list);
+       listView.setAdapter(adapter);
 
 
 
+listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String selected = ((TextView) view.findViewById(R.id.email)).getText().toString();
+        Toast.makeText(UserShow.this, "clicked "+selected, Toast.LENGTH_SHORT).show();
+    }
+});
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
