@@ -4,4 +4,6 @@
     android:id="@+id/AddPage"></item>
     <item android:title="Fetch User"
         android:id="@+id/UserShow"></item>
+    <item android:title="Logout"
+        android:id="@+id/Logout"> </item>
 </menu>

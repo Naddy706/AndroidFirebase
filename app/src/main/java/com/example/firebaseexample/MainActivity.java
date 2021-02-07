@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference ref;
     FirebaseStorage storage;
     StorageReference storageReference;
+    FirebaseAuth mAuth;
+
 
 
 
@@ -83,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser us=mAuth.getCurrentUser();
+        if(us == null){
+            Intent i = new Intent(MainActivity.this,Login.class);
+            startActivity(i);
+            finish();
+        }
         spinner = findViewById(R.id.spinner);
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -104,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         ref = database.getReference().child("Users");
+
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -492,6 +505,8 @@ updd.setOnClickListener(new View.OnClickListener() {
             case R.id.UserShow:
                 ShowUserPage();
                 return true;
+            case  R.id.Logout:
+                logout();
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -522,6 +537,13 @@ updd.setOnClickListener(new View.OnClickListener() {
     public  void ShowUserPage(){
         Intent intent = new Intent(MainActivity.this,UserShow.class);
         startActivity(intent);
+    }
+
+    public  void logout(){
+        mAuth.signOut();
+        Intent i = new Intent(MainActivity.this,Login.class);
+        startActivity(i);
+        finish();
     }
 
     public void uploadPic() {
