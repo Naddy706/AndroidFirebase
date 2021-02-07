@@ -68,8 +68,8 @@ public class SignUp extends AppCompatActivity {
             else if(p.isEmpty()){
                 Toast.makeText(SignUp.this, "Password Can not be null", Toast.LENGTH_SHORT).show();
             }
-            else if(p.length()<6){
-                Toast.makeText(SignUp.this, "Password must be greater then 5 charater", Toast.LENGTH_SHORT).show();
+            else if(p.length()<8){
+                Toast.makeText(SignUp.this, "Password must be greater then 7 charater", Toast.LENGTH_SHORT).show();
             }
             else {
                 helper.Register(e, p);
